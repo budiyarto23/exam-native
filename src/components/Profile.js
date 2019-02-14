@@ -1,36 +1,20 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
-import { Header } from 'react-native-elements';
+import { View } from 'react-native';
 import { connect } from 'react-redux';
+import { Header } from 'react-native-elements';
 import { Icon } from 'native-base';
-import { logoutUser } from '../actions';
-import { Card, CardSection, Button, Input } from './common';
+import { Card, CardSection, Button } from './common';
+import { logoutUser, postingCreate } from '../actions';
+import PostImage from './PostImage';
 
-class Profile extends Component {
+class Profile extends Component{
     static navigationOptions = {
-        drawerLabel: 'My Profile',
+        tabBarLabel: 'Profile',
+        
     };
 
-    state = { email: '' }
-    
-    componentDidMount() {
-        console.log(this.props.user)
-        if (this.props.user) {  
-            if(this.props.user.user) {
-                this.setState({ email: this.props.user.user.email });
-            }
-            else {
-                this.setState({ email: this.props.user.email });
-            }
-        }
-    }
-
-    onCaption = (text) => {
-        this.props.inputCaption(text);
-    }
-
-    onUrl = (text) => {
-        this.props.inputUrl(text);
+    state = {
+        text: this.props.user.email
     }
 
     logOut = () => {
@@ -38,35 +22,30 @@ class Profile extends Component {
         this.props.screenProps.rootNavigation.navigate('Login');
     }
 
-    onButtonPress = () => {
-        const { caption, url } = this.props;
+    onButtonSavePress = () => {
+        var data = {
+                link: this.props.link, 
+                caption: this.props.caption,
+                email: this.props.user.email
+        }
+        this.props.postingCreate(data); 
     }
 
     render() {
         return (
             <View>
-                <Header
-                    centerComponent={{ text: this.state.email, style: { color: '#fff' } }}
+                <Header 
+                    centerComponent={{text: this.state.text, style: { color: '#fff', fontSize: 16 }}}
+                    rightComponent={{
+                        Icon: 'person',
+                        Color: '#fff',
+                        onPress: this.logOut
+                    }}
                 />
                 <Card>
+                    <PostImage />
                     <CardSection>
-                        <Input
-                            label="Caption"
-                            placeholder="your caption"
-                            onChangeText={this.onEmailChange}
-                            value={this.props.email}
-                        />
-                    </CardSection>
-                    <CardSection>
-                        <Input
-                            label="Image"
-                            placeholder="Image URL"
-                            onChangeText={this.onEmailChange}
-                            value={this.props.email}
-                        />
-                    </CardSection>
-                    <CardSection>
-                        <Button onPress={this.logOut}>
+                        <Button onPress={this.onButtonSavePress}>
                             Post
                         </Button>
                     </CardSection>
@@ -77,9 +56,11 @@ class Profile extends Component {
 }
 
 const mapStateToProps = (state) => {
-    const { user } = state.auth;
+    return { 
+        user: state.auth.user,
+        link: state.form.link,
+        caption: state.post.caption
+    }
+}
 
-    return { user };
-};
-
-export default connect(mapStateToProps, { logoutUser })(Profile);
+export default connect(mapStateToProps, { logoutUser, postingCreate })(Profile);

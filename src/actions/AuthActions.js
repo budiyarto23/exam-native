@@ -1,15 +1,16 @@
 import firebase from '@firebase/app';
 import '@firebase/auth';
 
-import { 
-    EMAIL_CHANGED, 
+import {
+    EMAIL_CHANGED,
     PASSWORD_CHANGED,
     LOGIN_USER,
-    LOGIN_USER_FAIL,
     LOGIN_USER_SUCCESS,
+    LOGIN_USER_FAIL,
     LOGOUT_USER,
     NOT_LOGIN_YET
-} from './types';
+} from './types'
+
 
 export const emailChanged = (text) => {
     return {
@@ -23,12 +24,34 @@ export const passwordChanged = (text) => {
         type: PASSWORD_CHANGED,
         payload: text
     };
+}
+
+export const alreadyLogin = (user) => {
+    return {
+        type: LOGIN_USER_SUCCESS,
+        payload: user
+    }
+}
+
+export const notLoginYet = () => {
+    return {
+        type: NOT_LOGIN_YET
+    }
+}
+
+export const logoutUser = () => {
+    return (dispatch) => {
+        firebase.auth().signOut()
+        .then( res => {
+            dispatch({ type: LOGOUT_USER })
+        });
+    };
 };
 
 export const loginUser = ({ email, password }) => {
     return (dispatch) => {
         dispatch({ type: LOGIN_USER });
-        
+
         firebase.auth().signInWithEmailAndPassword(email, password)
         .then(user => {
             loginUserSuccess(dispatch, user);
@@ -45,28 +68,6 @@ export const loginUser = ({ email, password }) => {
     };
 };
 
-export const logoutUser = () => {
-    return (dispatch) => {
-        firebase.auth().signOut()
-        .then(res => {
-            dispatch({ type: LOGOUT_USER });
-        });
-    };
-};
-
-export const alreadyLogin = (user) => {
-    return {
-        type: LOGIN_USER_SUCCESS, 
-        payload: user
-    };
-};
-
-export const notLoginYet = () => {
-    return {
-        type: NOT_LOGIN_YET
-    };
-};
-
 const loginUserSuccess = (dispatch, user) => {
     dispatch({
         type: LOGIN_USER_SUCCESS,
@@ -75,5 +76,5 @@ const loginUserSuccess = (dispatch, user) => {
 };
 
 const loginUserFail = (dispatch) => {
-    dispatch({ type: LOGIN_USER_FAIL });
-};
+    dispatch({ type: LOGIN_USER_FAIL })
+}

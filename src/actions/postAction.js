@@ -1,18 +1,39 @@
-import {
-    POST_IMAGE,
-    URL_IMAGE
-} from './types';
+import firebase from '@firebase/app';
+import '@firebase/database';
 
-export const inputCaption = (text) => {
+import {
+    POSTING_UPDATE,
+    POSTING_CREATE,
+    GETLIST_SUCCESS
+} from './types'
+
+export const postingUpdate = (prop, value) => {
     return {
-        type: POST_IMAGE,
-        payload: text
+        type: POSTING_UPDATE,
+        payload: { prop, value }
     };
 };
 
-export const inputUrl = (text) => {
-    return {
-        type: URL_IMAGE,
-        payload: text
+export const postingCreate = (data) => {
+    
+    return (dispatch) => {
+        firebase.database().ref(`/users/postimage`)
+        .push(data)
+        .then(() => {
+            dispatch({ type: POSTING_CREATE });
+        });
+    };
+}
+
+export const getAllPost = () => {
+    return (dispatch) => {
+        firebase.database().ref('/users/postimage')
+        .on('value', snapshot => {
+            dispatch({ 
+                type: GETLIST_SUCCESS, 
+                payload: snapshot.val()
+            });
+        });
+        
     };
 };

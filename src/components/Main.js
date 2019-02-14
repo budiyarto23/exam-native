@@ -1,19 +1,19 @@
-import { createBottomTabNavigator } from 'react-navigation';
+import React from 'react';
+import { createStackNavigator } from 'react-navigation';
 import LoginForm from './LoginForm';
-import Profile from './Profile';
+import MainMenu from './MainMenu';
 
-export default createBottomTabNavigator(
+export default createStackNavigator(
     {
         Login: {
             screen: LoginForm
         },
-        Profile: {
-            screen: Profile
-        },
-
+        MainMenu: {
+            screen: ({ navigation }) => <MainMenu screenProps={{ rootNavigation: navigation }} />
+        }
     },
     {
         initialRouteName: 'Login',
         headerMode: 'none'
     }
-);
+)
