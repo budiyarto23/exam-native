@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { Header } from 'react-native-elements';
-import { Icon } from 'native-base';
 import { Card, CardSection, Button } from './common';
 import { logoutUser, postingCreate } from '../actions';
 import PostImage from './PostImage';
@@ -34,19 +33,17 @@ class Profile extends Component{
     render() {
         return (
             <View>
-                <Header 
-                    centerComponent={{text: this.state.text, style: { color: '#fff', fontSize: 16 }}}
-                    rightComponent={{
-                        Icon: 'person',
-                        Color: '#fff',
-                        onPress: this.logOut
-                    }}
-                />
+                <Header centerComponent={{text: this.state.text, style: { color: '#fff', fontSize: 16 }}}/>
                 <Card>
                     <PostImage />
                     <CardSection>
                         <Button onPress={this.onButtonSavePress}>
                             Post
+                        </Button>
+                    </CardSection>
+                    <CardSection>
+                        <Button onPress={this.logOut}>
+                            Log Out
                         </Button>
                     </CardSection>
                 </Card>
